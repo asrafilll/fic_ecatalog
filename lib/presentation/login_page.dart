@@ -23,16 +23,17 @@ class _LoginPageState extends State<LoginPage> {
     checkAuth();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+
     super.initState();
   }
 
   void checkAuth() async {
     final auth = await LocalDataSource().getToken();
     if (auth.isNotEmpty) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      Navigator.push(context, MaterialPageRoute(builder: (_) {
         return const HomePage();
       }));
-    } else {}
+    }
   }
 
   @override
@@ -103,8 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                     content: Text('Login Success'),
                     backgroundColor: Colors.blue,
                   ));
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const HomePage();
                   }));
                 }
