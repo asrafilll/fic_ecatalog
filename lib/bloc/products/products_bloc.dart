@@ -20,5 +20,16 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         (result) => emit(ProductsLoaded(data: result)),
       );
     });
+
+    on<GetSingleProductEvent>((event, emit) async {
+      emit(ProductsLoading());
+      final result = await dataSource.getSingleProduct(event.id);
+      print("GetSingleProductEvent $result");
+      print(result);
+      result.fold(
+        (error) => emit(ProductsError(message: error)),
+        (result) => emit(SingleProductLoaded(data: result)),
+      );
+    });
   }
 }

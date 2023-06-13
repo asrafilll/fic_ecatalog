@@ -4,6 +4,7 @@ import 'package:flutter_ecatalog/bloc/add_product/add_product_bloc.dart';
 import 'package:flutter_ecatalog/bloc/products/products_bloc.dart';
 import 'package:flutter_ecatalog/data/datasources/local_datasource.dart';
 import 'package:flutter_ecatalog/data/models/request/product_request_model.dart';
+import 'package:flutter_ecatalog/presentation/detail_product_page.dart';
 import 'package:flutter_ecatalog/presentation/login_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -61,10 +62,17 @@ class _HomePageState extends State<HomePage> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListView.builder(
-                // reverse: true,
                 itemBuilder: (context, index) {
                   return Card(
                     child: ListTile(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (builder) => DetailProductPage(
+                            id: state.data.reversed.toList()[index].id!,
+                          ),
+                        ),
+                      ),
                       title: Text(
                           state.data.reversed.toList()[index].title ?? '-'),
                       subtitle: Text('${state.data[index].price}\$'),

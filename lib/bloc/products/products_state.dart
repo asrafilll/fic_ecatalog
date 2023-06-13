@@ -20,3 +20,10 @@ class ProductsError extends ProductsState {
     required this.message,
   });
 }
+
+class SingleProductLoaded extends ProductsState {
+  final ProductResponseModel data;
+  SingleProductLoaded({
+    required this.data,
+  });
+}
