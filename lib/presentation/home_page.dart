@@ -18,11 +18,27 @@ class _HomePageState extends State<HomePage> {
   TextEditingController? titleController;
   TextEditingController? priceController;
   TextEditingController? descriptionController;
+
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     titleController = TextEditingController();
     priceController = TextEditingController();
     descriptionController = TextEditingController();
+    _scrollController.addListener(() {
+      final currentState = context.read<ProductsBloc>().state;
+      if (currentState is ProductsLoaded) {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          final offset = currentState.data.length;
+          const limit = 10;
+          context.read<ProductsBloc>().add(
+                LoadMoreProductEvent(offset: offset, limit: limit),
+              );
+        }
+      }
+    });
     super.initState();
     context.read<ProductsBloc>().add(GetProductsEvent());
   }
@@ -33,6 +49,7 @@ class _HomePageState extends State<HomePage> {
     titleController!.dispose();
     priceController!.dispose();
     descriptionController!.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -62,6 +79,7 @@ class _HomePageState extends State<HomePage> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListView.builder(
+                controller: _scrollController,
                 itemBuilder: (context, index) {
                   return Card(
                     child: ListTile(
@@ -69,13 +87,13 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (builder) => DetailProductPage(
-                            id: state.data.reversed.toList()[index].id!,
+                            id: state.data.toList()[index].id!,
                           ),
                         ),
                       ),
-                      title: Text(
-                          state.data.reversed.toList()[index].title ?? '-'),
-                      subtitle: Text('${state.data[index].price}\$'),
+                      title: Text(state.data.toList()[index].title ?? '-'),
+                      subtitle:
+                          Text(state.data.toList()[index].description ?? '-'),
                     ),
                   );
                 },

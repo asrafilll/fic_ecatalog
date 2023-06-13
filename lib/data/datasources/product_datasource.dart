@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 
 class ProductDataSource {
   Future<Either<String, List<ProductResponseModel>>> getAllProduct() async {
-    final response =
-        await http.get(Uri.parse('https://api.escuelajs.co/api/v1/products/'));
+    final response = await http.get(Uri.parse(
+        'https://api.escuelajs.co/api/v1/products/?offset=0&limit=10'));
     if (response.statusCode == 200) {
       return Right(List<ProductResponseModel>.from(jsonDecode(response.body)
           .map((x) => ProductResponseModel.fromMap(x))));
@@ -54,6 +54,19 @@ class ProductDataSource {
       return Right(ProductResponseModel.fromJson(response.body));
     } else {
       return const Left('Error Edit Product');
+    }
+  }
+
+  Future<Either<String, List<ProductResponseModel>>> loadMoreProduct(
+      int offSet, int limit) async {
+    final response = await http.get(Uri.parse(
+        'https://api.escuelajs.co/api/v1/products/?offset=$offSet&limit=$limit'));
+
+    if (response.statusCode == 200) {
+      return Right(List<ProductResponseModel>.from(jsonDecode(response.body)
+          .map((x) => ProductResponseModel.fromMap(x))));
+    } else {
+      return const Left('get product error');
     }
   }
 }
